@@ -1,0 +1,45 @@
+---
+title: "Aspen Meadow"
+output: html_document
+date: "2024-10-08"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Ground Cover
+
+Let's read in the Aspen Meadows ground cover data for Fall 2024.
+
+```{r}
+# reading in the ground cover data for Fall 2024
+aspen_cover_2024 <- 
+  read_excel("data/raw/aspen_meadow.xlsx", 
+             sheet = "F24 % Ground Cover")
+
+view(aspen_cover_2024)
+```
+
+Next, let's select the information we need to create a plot comparing the ground cover across transects.
+
+```{r}
+# select only transect and bare ground types
+aspen_cover_types_2024 <-
+  aspen_cover_2024 %>%
+  select(1, 3:9)
+
+view(aspen_cover_types_2024)
+```
+
+To more efficiently work with this graph, let's "tidy" the data.
+
+```{r}
+aspen_cover_types_2024_tidy <- aspen_cover_types_2024 %>%
+  pivot_longer(cols = !Transect, names_to = "Cover Type", 
+               values_to = "Percentage")
+
+view(aspen_cover_types_2024_tidy)
+```
+
+Now, let's generate a plot comparing the ground cover across transects.
