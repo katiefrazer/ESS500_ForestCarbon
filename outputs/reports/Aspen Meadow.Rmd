@@ -8,6 +8,12 @@ date: "2024-10-08"
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+```{r}
+# why can I not use source("scripts/setup.R")?
+
+source("C:/Users/Katie Frazer/Documents/ESS500_ForestCarbon/scripts/setup.R")
+```
+
 # Ground Cover
 
 Let's read in the Aspen Meadows ground cover data for Fall 2024.
@@ -15,8 +21,7 @@ Let's read in the Aspen Meadows ground cover data for Fall 2024.
 ```{r}
 # reading in the ground cover data for Fall 2024
 aspen_cover_2024 <- 
-  read_excel("data/raw/aspen_meadow.xlsx", 
-             sheet = "F24 % Ground Cover")
+  read_excel("C:/Users/Katie Frazer/Documents/ESS500_ForestCarbon/data/raw/aspen_meadow.xlsx", sheet = "F24 % Ground Cover")
 
 view(aspen_cover_2024)
 ```
@@ -36,10 +41,32 @@ To more efficiently work with this graph, let's "tidy" the data.
 
 ```{r}
 aspen_cover_types_2024_tidy <- aspen_cover_types_2024 %>%
-  pivot_longer(cols = !Transect, names_to = "Cover Type", 
+  pivot_longer(cols = !Transect, names_to = "Cover_Type", 
                values_to = "Percentage")
 
 view(aspen_cover_types_2024_tidy)
 ```
 
 Now, let's generate a plot comparing the ground cover across transects.
+
+```{r}
+# this needs to be beautified
+
+aspen_cover_types_2024_tidy %>%
+  ggplot(aes(x = Transect, y = Percentage)) +
+  geom_col(aes(fill = Cover_Type))
+```
+
+Let's import the data for the trees. Note that I did not import which tree was which, as I intend to add this in R.
+
+```{r}
+aspen_meadow_trees <- 
+  read_excel("C:/Users/Katie Frazer/Documents/ESS500_ForestCarbon/data/raw/aspen_meadow.xlsx", 
+             sheet = "F24 Trees", range = "A2:M12")
+
+View(aspen_meadow_trees)
+```
+
+```{r}
+
+```
