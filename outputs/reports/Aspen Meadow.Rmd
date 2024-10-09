@@ -11,7 +11,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r}
 # why can I not use source("scripts/setup.R")?
 
-source("C:/Users/Katie Frazer/Documents/ESS500_ForestCarbon/scripts/setup.R")
+source("../../scripts/setup.R")
 ```
 
 # Ground Cover
@@ -21,7 +21,7 @@ Let's read in the Aspen Meadows ground cover data for Fall 2024.
 ```{r}
 # reading in the ground cover data for Fall 2024
 aspen_cover_2024 <- 
-  read_excel("C:/Users/Katie Frazer/Documents/ESS500_ForestCarbon/data/raw/aspen_meadow.xlsx", sheet = "F24 % Ground Cover")
+  read_excel("../../data/clean/aspen_meadow.xlsx", sheet = "F24 % Ground Cover")
 
 view(aspen_cover_2024)
 ```
@@ -61,12 +61,12 @@ Let's import the data for the trees. Note that I did not import which tree was w
 
 ```{r}
 aspen_meadow_trees <- 
-  read_excel("C:/Users/Katie Frazer/Documents/ESS500_ForestCarbon/data/raw/aspen_meadow.xlsx", 
+  read_excel("../../data/clean/aspen_meadow.xlsx", 
              sheet = "F24 Trees", range = "A2:M12")
 
 View(aspen_meadow_trees)
 ```
 
 ```{r}
-
+# insert t1-t4 in excel sheet, pivot longer, separate
 ```
