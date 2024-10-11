@@ -77,10 +77,10 @@ View(aspen_meadow_trees)
 # insert t1-t4 in excel sheet, pivot longer, separate
 
 # this needs to be tested, unable to run due to no wifi
-aspen_meadow_trees %>%
-  pivot_longer(cols = !Transect, names_to = "Tree Characteristic", 
-               values_to = "Value") %>%
-  mutate(Tree Number = sep(Tree Characteristic, "-"))
+#aspen_meadow_trees %>%
+#  pivot_longer(cols = !Transect, names_to = "Tree Characteristic", 
+#               values_to = "Value") %>%
+#  mutate(Tree Number = separate(Tree Characteristic, sep = "-")) 
 ```
 
 ```{r}
@@ -95,9 +95,28 @@ Let's look at the historical frequency over 1996-2004. This is the percentage of
 
 ```{r}
 # read in historical frequency datasheet
+aspen_freq <- read_excel("../../data/clean/aspen_meadow.xlsx", 
+    sheet = "Historical Frequency", range = "A2:K10")
 
+View(aspen_freq)
+```
+
+Let's tidy the dataset to make it easier to work with.
+
+```{r}
+aspen_freq_tidy <- aspen_freq %>%
+  pivot_longer(cols = !Cover_Type, names_to = "Year", values_to = "Values")
+```
+
+Let's make a graph representing the data.
+
+```{r}
 # generate graph with x-axis year and color coded by cover type
 # likely a histogram or bar graph ~ frequency graph
+
+aspen_freq_tidy %>%
+  ggplot(aes(x = Year, y = Values)) +
+  geom_col(aes(fill = Cover_Type))
 ```
 
 # Historical Relative Frequency
