@@ -14,7 +14,7 @@ knitr::opts_chunk$set(echo = TRUE)
 source("../../scripts/setup.R")
 ```
 
-# Ground Cover
+# 2024 Ground Cover
 
 Let's read in the Aspen Meadows ground cover data for Fall 2024.
 
@@ -50,23 +50,72 @@ view(aspen_cover_types_2024_tidy)
 Now, let's generate a plot comparing the ground cover across transects.
 
 ```{r}
-# this needs to be beautified
-
 aspen_cover_types_2024_tidy %>%
   ggplot(aes(x = Transect, y = Percentage)) +
   geom_col(aes(fill = Cover_Type))
+
+# this needs to be beautified
+# install viridis package and change colors to viridis for color blind
+# annotate missing data
+# change x-axis to each transect number
+# add graph title and subtitle, make sure to mention it is aspen meadows
 ```
 
-Let's import the data for the trees. Note that I did not import which tree was which, as I intend to add this in R.
+# 2024 Trees
+
+Let's import the data for the tree information by transect.
 
 ```{r}
 aspen_meadow_trees <- 
   read_excel("../../data/clean/aspen_meadow.xlsx", 
-             sheet = "F24 Trees", range = "A2:M12")
+             sheet = "F24 Trees", range = "A1:M11")
 
 View(aspen_meadow_trees)
 ```
 
 ```{r}
 # insert t1-t4 in excel sheet, pivot longer, separate
+
+# this needs to be tested, unable to run due to no wifi
+aspen_meadow_trees %>%
+  pivot_longer(cols = !Transect, names_to = "Tree Characteristic", 
+               values_to = "Value") %>%
+  mutate(Tree Number = sep(Tree Characteristic, "-"))
+```
+
+```{r}
+# generate a graph for trees
+
+# scatterplot likely, x = distance, y = circumference, color = species, facet_grid by transect
+```
+
+# Historical Frequency
+
+Let's look at the historical frequency over 1996-2004. This is the percentage of quadrats where a cover type appears. For example, if grass appeared in five quadrats out of the total ten, the historical frequency would be 50% for grass that year. If two out of ten quadrats had rocks, the historical frequency of those rocks for that year would be 20%.
+
+```{r}
+# read in historical frequency datasheet
+
+# generate graph with x-axis year and color coded by cover type
+# likely a histogram or bar graph ~ frequency graph
+```
+
+# Historical Relative Frequency
+
+```{r}
+# read in the relative frequency tab from the aspen meadows excel
+
+# generate graph similar to that in historical frequency section
+
+# make sure to mention that there was some unaccounted for data, and how that affected calculations
+```
+
+# Historical Average Percent Cover
+
+```{r}
+# read in the historical avg % cover tab from the aspen meadows excel
+
+# generate graph similar to all above
+
+# make sure to mention that there was some unaccounted for data, and how that affected calculations
 ```
