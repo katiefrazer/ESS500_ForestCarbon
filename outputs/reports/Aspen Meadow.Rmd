@@ -55,10 +55,14 @@ Now, let's generate a plot comparing the ground cover across transects.
 aspen_cover_types_2024_tidy %>%
   ggplot(aes(x = Transect, y = Percentage)) +
   geom_col(aes(fill = Cover_Type)) +
-  labs(title = "Aspen Meadow Cover Type Percentage in 2024",
-       subtitle = "Data collected at CSU Mountain Campus",
+  labs(title = "Ground Cover Type Percentage in 2024",
+       subtitle = "Location: Aspen Meadows, CSU Mountain Campus, CO",
        x = "Transect Number",
        y = "Percentage of Cover Type") +
+  guides(fill = guide_legend(title = "Cover Type")) +
+  dark_theme_minimal() +
+  scale_fill_viridis(discrete = TRUE) +
+  scale_x_continuous(breaks = seq(1, 10, by = 1)) +
   theme(legend.position = "right",
         plot.title = element_text(face = "bold", size = "20"),
         plot.title.position = "plot",
