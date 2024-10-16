@@ -9,9 +9,11 @@ packageLoad <- function(x) {
   }
 }
 
-packages <- c("tidyverse",
-              "readxl",
-              "rmarkdown",
-              "lubridate")
+packages <- c("tidyverse", # ggplot & tidy functions
+              "readxl", # for reading in excel sheets
+              "rmarkdown", # rmarkdown
+              "ggdark", # dark ggplot themes
+              "viridis"
+              )
 
 packageLoad(packages)

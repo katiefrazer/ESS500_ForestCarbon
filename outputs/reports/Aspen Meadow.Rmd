@@ -124,6 +124,7 @@ Let's tidy the dataset to make it easier to work with.
 
 ```{r}
 aspen_freq_tidy <- aspen_freq %>%
+  select(!"2000") %>% # removed bc no data
   pivot_longer(cols = !Cover_Type, names_to = "Year", values_to = "Values")
 
 #View(aspen_freq_tidy)
@@ -136,29 +137,40 @@ Let's make a graph representing the data.
 aspen_freq_tidy %>%
   ggplot(aes(x = Year, y = Values)) +
   geom_col(aes(fill = Cover_Type)) +
-  labs(title = "Aspen Meadow Ground Cover Frequency from 1996-2004 and 2024",
-       subtitle = "Data Collected at CSU Mountain Campus",
+  labs(title = "Historical Ground Cover Frequency",
+       subtitle = "Location: Aspen Meadow, CSU Mountain Campus, CO",
        x = "Year",
-       y = "Percentage of Quadrats")
-
-# this graph is better for comparing by individual cover types
-aspen_freq_tidy %>%
-  ggplot(aes(x = Year, y = Values)) +
-  geom_point(aes(color = Cover_Type)) +
-  facet_grid(Cover_Type~.) +
-  labs(title = "Aspen Meadow Ground Cover Frequency from 1996-2004 and 2024",
-       subtitle = "Data Collected at CSU Mountain Campus",
-       x = "Year",
-       y = "Percentage of Quadrats")
-
-# they both convey the same information, just in different ways
+       y = "Percentage of Quadrats") +
+  guides(fill = guide_legend(title = "Cover Type")) +
+  dark_theme_minimal() +
+  scale_fill_viridis(discrete = TRUE) +
+  theme(plot.title = element_text(face = "bold", size = "20"),
+        plot.title.position = "plot", 
+        axis.text.y = element_text(size = "7.5"))
 ```
 
-```{r}
-#install.packages("phaseR")
-library(phaseR)
+An alternative graph:
 
-phasePortrait(aspen_freq_tidy, ylim = 0)
+```{r}
+# this graph is better for comparing by individual cover types
+# this graph needs to be adjusted
+aspen_freq_tidy %>%
+  group_by(Cover_Type) %>%
+  ggplot(aes(x = Year, y = Values)) +
+  geom_point(aes(color = Cover_Type)) +
+  facet_wrap(~Cover_Type, ncol = 2) +
+  geom_line(aes(color = Cover_Type), group = 1) +
+  labs(title = "Historical Ground Cover Frequency",
+       subtitle = "Location: Aspen Meadow, CSU Mountain Campus, CO",
+       x = "Year",
+       y = "Percentage of Quadrats") +
+  guides(color = guide_legend(title = "Cover Type")) +
+  dark_theme_gray() +
+  scale_color_viridis(discrete = TRUE) +
+  theme(legend.position = "none",
+        plot.title = element_text(face = "bold", size = "20"),
+        plot.title.position = "plot", 
+        axis.text.y = element_text(size = "7.5"))
 ```
 
 # Historical Relative Frequency
@@ -223,3 +235,7 @@ aspen_avg_cover_tidy %>%
 
 # make sure to mention that there was some unaccounted for data, and how that affected calculations
 ```
+
+# Phase Plots
+
+I was tasked with developing a set of phase plots using the historical ground cover data from 1996-2004 and the ground cover data from 2024.
