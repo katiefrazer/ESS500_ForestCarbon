@@ -132,19 +132,33 @@ aspen_freq_tidy <- aspen_freq %>%
 Let's make a graph representing the data.
 
 ```{r}
-# generate graph with x-axis year and color coded by cover type
-# likely a histogram or bar graph ~ frequency graph
-
+# this graph is better for comparing full cover types
 aspen_freq_tidy %>%
   ggplot(aes(x = Year, y = Values)) +
-  geom_col(aes(fill = Cover_Type))
-  labs(title = "Aspen Meadow Ground Cover Frequency from 1996-2004",
+  geom_col(aes(fill = Cover_Type)) +
+  labs(title = "Aspen Meadow Ground Cover Frequency from 1996-2004 and 2024",
        subtitle = "Data Collected at CSU Mountain Campus",
        x = "Year",
        y = "Percentage of Quadrats")
 
-# may need to adjust so that we can more easily compare by cover type
-# x be year and y be percentage, facet wrap by cover type?
+# this graph is better for comparing by individual cover types
+aspen_freq_tidy %>%
+  ggplot(aes(x = Year, y = Values)) +
+  geom_point(aes(color = Cover_Type)) +
+  facet_grid(Cover_Type~.) +
+  labs(title = "Aspen Meadow Ground Cover Frequency from 1996-2004 and 2024",
+       subtitle = "Data Collected at CSU Mountain Campus",
+       x = "Year",
+       y = "Percentage of Quadrats")
+
+# they both convey the same information, just in different ways
+```
+
+```{r}
+#install.packages("phaseR")
+library(phaseR)
+
+phasePortrait(aspen_freq_tidy, ylim = 0)
 ```
 
 # Historical Relative Frequency
@@ -185,8 +199,7 @@ aspen_rel_freq_tidy %>%
 
 ```{r}
 # read in the historical avg % cover tab from the aspen meadows excel
-aspen_avg_cover <- read_excel("../../data/clean/aspen_meadow.xlsx", 
-    sheet = "Historical Avg % Cover", range = "A2:K10")
+aspen_avg_cover <- read_excel("../../data/clean/aspen_meadow.xlsx", sheet = "Historical Avg % Cover", range = "A2:K10")
 
 #View(aspen_avg_cover)
 ```
