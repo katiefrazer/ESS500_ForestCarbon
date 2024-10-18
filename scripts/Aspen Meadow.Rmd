@@ -9,9 +9,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r}
-# why can I not use source("scripts/setup.R")?
-
-source("../../scripts/setup.R")
+source("setup.R")
 ```
 
 # 2024 Ground Cover
@@ -21,7 +19,7 @@ Let's read in the Aspen Meadows ground cover data for Fall 2024.
 ```{r}
 # reading in the ground cover data for Fall 2024
 aspen_cover_2024 <- 
-  read_excel("../../data/clean/aspen_meadow.xlsx", 
+  read_excel("../data/clean/aspen_meadow.xlsx", 
              sheet = "F24 % Ground Cover",
              range = "A1:I11")
 
@@ -68,10 +66,10 @@ aspen_cover_types_2024_tidy %>%
         plot.title.position = "plot",
         axis.title.x = element_text(face = "bold", size = "10"),
         axis.title.y = element_text(face = "bold", size = "10")) +
-  annotate(geom = "text", x = 4, y = 95,
+  annotate(geom = "text", x = 4.5, y = 95,
            label = "The sum of cover types for \n Transect 2 was 80%",
            size = 2.75) +
-  geom_curve(aes(x = 2.9, xend = 2, y = 92.5, yend = 81),
+  geom_curve(aes(x = 3, xend = 2, y = 93, yend = 81),
              arrow = arrow(length = unit(0.2, "cm")),
              size = 0.5,
              curvature = 0.4)
@@ -89,21 +87,7 @@ aspen_cover_types_2024_tidy %>%
 Let's import the data for the tree information by transect.
 
 ```{r}
-aspen_meadow_trees <- 
-  read_excel("../../data/clean/aspen_meadow.xlsx", 
-             sheet = "F24 Trees", range = "A1:M11")
-
-#View(aspen_meadow_trees)
-```
-
-```{r}
-# insert t1-t4 in excel sheet, pivot longer, separate
-
-# this needs to be tested, unable to run due to no wifi
-#aspen_meadow_trees %>%
-#  pivot_longer(cols = !Transect, names_to = "Tree Characteristic", 
-#               values_to = "Value") %>%
-#  mutate(Tree Number = separate(Tree Characteristic, sep = "-")) 
+# read in trees
 ```
 
 ```{r}
@@ -118,7 +102,7 @@ Let's look at the historical frequency over 1996-2004. This is the percentage of
 
 ```{r}
 # read in historical frequency datasheet
-aspen_freq <- read_excel("../../data/clean/aspen_meadow.xlsx", 
+aspen_freq <- read_excel("../data/clean/aspen_meadow.xlsx", 
     sheet = "Historical Frequency", range = "A2:K10")
 
 #View(aspen_freq)
@@ -174,7 +158,8 @@ aspen_freq_tidy %>%
   theme(legend.position = "none",
         plot.title = element_text(face = "bold", size = "20"),
         plot.title.position = "plot", 
-        axis.text.y = element_text(size = "7.5"))
+        axis.text.x = element_text(angle = 20),
+        axis.text.y = element_text(size = "7", angle = 0))
 ```
 
 # Historical Relative Frequency
@@ -183,7 +168,7 @@ The historical relative frequency is the number of occurrences divided by the to
 
 ```{r}
 # read in the relative frequency tab from the aspen meadows excel
-aspen_rel_freq <- read_excel("../../data/clean/aspen_meadow.xlsx", 
+aspen_rel_freq <- read_excel("../data/clean/aspen_meadow.xlsx", 
     sheet = "Historical Rel. Frequency", 
     range = "A2:K10")
 
@@ -194,9 +179,10 @@ Let's tidy the data to make it easier to graph.
 
 ```{r}
 aspen_rel_freq_tidy <- aspen_rel_freq %>%
-  pivot_longer(cols = 2:11, names_to = "Year", values_to = "Rel_Freq")
+  select(!"2000") %>%
+  pivot_longer(cols = 2:10, names_to = "Year", values_to = "Rel_Freq")
 
-#view(aspen_rel_freq_tidy)
+view(aspen_rel_freq_tidy)
 ```
 
 Let's generate the graph for historical relative frequency.
@@ -205,7 +191,16 @@ Let's generate the graph for historical relative frequency.
 # generate graph similar to that in historical frequency section
 aspen_rel_freq_tidy %>%
   ggplot(aes(x = Year, y = Rel_Freq)) +
-  geom_col(aes(fill = Cover_Type))
+  geom_col(aes(fill = Cover_Type)) +
+  labs(title = "Historical Ground Cover Relative Frequency",
+       subtitle = "Location: Aspen Meadows, CSU Mountain Campus, CO",
+       y = "Relative Frequency (%)") +
+  guides(fill = guide_legend(title = "Cover Type")) +
+  dark_theme_minimal() +
+  scale_fill_viridis(discrete = TRUE) +
+  theme(plot.title = element_text(face = "bold", size = "19"),
+        plot.title.position = "plot", 
+        axis.text.y = element_text(size = "7.5"))
 
 
 # make sure to mention that there was some unaccounted for data, and how that affected calculations
@@ -215,7 +210,7 @@ aspen_rel_freq_tidy %>%
 
 ```{r}
 # read in the historical avg % cover tab from the aspen meadows excel
-aspen_avg_cover <- read_excel("../../data/clean/aspen_meadow.xlsx", sheet = "Historical Avg % Cover", range = "A2:K10")
+aspen_avg_cover <- read_excel("../data/clean/aspen_meadow.xlsx", sheet = "Historical Avg % Cover", range = "A2:K10")
 
 #View(aspen_avg_cover)
 ```
@@ -224,7 +219,8 @@ Let's tidy the data.
 
 ```{r}
 aspen_avg_cover_tidy <- aspen_avg_cover %>%
-  pivot_longer(cols = 2:11, names_to = "Year", values_to = "Avg_Cover") 
+  select(!"2000") %>%
+  pivot_longer(cols = 2:10, names_to = "Year", values_to = "Avg_Cover") 
 
 #view(aspen_avg_cover_tidy)
 ```
@@ -235,9 +231,24 @@ Let's graph the data.
 # generate graph similar to all above
 aspen_avg_cover_tidy %>%
   ggplot(aes(x = Year, y = Avg_Cover)) +
-  geom_col(aes(fill = Cover_Type))
+  geom_col(aes(fill = Cover_Type)) +
+  labs(title = "Historical Average Percent Ground Cover",
+       subtitle = "Location: Aspen Meadow, CSU Mountain Campus, CO",
+       caption = "Due to decimal rounding, results may not add up to exactly 100%",
+       x = "Year",
+       y = "Average Ground Cover (%)") +
+  guides(color = guide_legend(title = "Cover Type")) +
+  dark_theme_gray() +
+  scale_fill_viridis(discrete = TRUE) +
+  theme(legend.position = "right",
+        plot.title = element_text(face = "bold", size = "20"),
+        plot.title.position = "plot", 
+        axis.text.x = element_text(angle = 20),
+        axis.text.y = element_text(size = "7", angle = 0))
 
 # make sure to mention that there was some unaccounted for data, and how that affected calculations
+
+# annotate that the 2004 year did not add up to 100, only added to 80
 ```
 
 # Phase Plots
