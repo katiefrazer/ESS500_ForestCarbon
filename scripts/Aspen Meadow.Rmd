@@ -152,7 +152,6 @@ aspen_freq_tidy %>%
        subtitle = "Location: Aspen Meadow, CSU Mountain Campus, CO",
        x = "Year",
        y = "Percentage of Quadrats") +
-  guides(color = guide_legend(title = "Cover Type")) +
   dark_theme_gray() +
   scale_color_viridis(discrete = TRUE) +
   theme(legend.position = "none",
@@ -204,6 +203,7 @@ aspen_rel_freq_tidy %>%
 
 
 # make sure to mention that there was some unaccounted for data, and how that affected calculations
+# annotate the 1997 year
 ```
 
 # Historical Average Percent Cover
@@ -237,7 +237,7 @@ aspen_avg_cover_tidy %>%
        caption = "Due to decimal rounding, results may not add up to exactly 100%",
        x = "Year",
        y = "Average Ground Cover (%)") +
-  guides(color = guide_legend(title = "Cover Type")) +
+  guides(fill = guide_legend(title = "Cover Type")) +
   dark_theme_gray() +
   scale_fill_viridis(discrete = TRUE) +
   theme(legend.position = "right",

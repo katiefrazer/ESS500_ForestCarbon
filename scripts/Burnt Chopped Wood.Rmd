@@ -1,0 +1,218 @@
+---
+title: "Burnt Chopped Wood"
+author: "Katherine Frazer"
+date: "2024-10-21"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+source("setup.R")
+```
+
+# 2024 Ground Cover
+
+Let's read in the dataset.
+
+```{r}
+burnt_cover_2024 <- read_excel("../data/clean/burnt_chopped_wood.xlsx", 
+    sheet = "F24 % Cover", 
+    range = "A1:J11", 
+    na = "NA")
+
+View(burnt_cover_2024)
+```
+
+Let's filter it to only have relevant info, and then tidy the data for usage.
+
+```{r}
+burnt_cover_2024_tidy <-
+  burnt_cover_2024 %>%
+    select(1, 3:9) %>%
+    pivot_longer(cols = !1, 
+                 names_to = "CoverType", 
+                 values_to = "Values")
+view(burnt_cover_2024_tidy)
+```
+
+Let's make the graph.
+
+```{r}
+burnt_cover_2024_tidy %>%
+  ggplot(aes(x = Transect, y = Values)) +
+  geom_col(aes(fill = CoverType)) +
+  labs(title = "Ground Cover Type Percentage in 2024",
+       subtitle = "Location: Burnt Chopped Wood, CSU Mountain Campus, CO",
+       caption = "Due to an error, there is no information for Transects 5 and 8.",
+       x = "Transect Number",
+       y = "Percentage of Cover Type") +
+  guides(fill = guide_legend(title = "Cover Type")) +
+  dark_theme_minimal() +
+  scale_fill_viridis(discrete = TRUE) +
+  scale_x_continuous(breaks = seq(1, 10, by = 1)) +
+  theme(legend.position = "right",
+        plot.title = element_text(face = "bold", size = "20"),
+        plot.title.position = "plot",
+        axis.title.x = element_text(face = "bold", size = "10"),
+        axis.title.y = element_text(face = "bold", size = "10"))
+```
+
+# 2024 Trees
+
+# Historical Frequency
+
+Let's read in the historical frequency datasheet.
+
+```{r}
+hist_freq <- read_excel("../data/clean/burnt_chopped_wood.xlsx",
+                        sheet = "Historical Frequency", 
+                        range = "A2:K10")
+
+View(hist_freq)
+```
+
+Let's tidy the data.
+
+```{r}
+hist_freq_tidy <- hist_freq %>%
+  select(!6) %>% #remove the year 2000
+  pivot_longer(cols = !1, 
+               names_to = "Year", 
+               values_to = "Percentage")
+
+view(hist_freq_tidy)
+```
+
+Let's graph.
+
+```{r}
+# this graph is better for comparing full cover types
+hist_freq_tidy %>%
+  ggplot(aes(x = Year, y = Percentage)) +
+  geom_col(aes(fill = GroundCover)) +
+  labs(title = "Historical Ground Cover Frequency",
+       subtitle = "Location: Burnt Chopped Wood, CSU Mountain Campus, CO",
+       x = "Year",
+       y = "Percentage of Quadrats") +
+  guides(fill = guide_legend(title = "Cover Type")) +
+  dark_theme_minimal() +
+  scale_fill_viridis(discrete = TRUE) +
+  theme(plot.title = element_text(face = "bold", size = "20"),
+        plot.title.position = "plot", 
+        axis.text.y = element_text(size = "7.5"))
+
+# annotate, it seems there might have been an error in calculations for 2002 and 2003
+```
+
+```{r}
+hist_freq_tidy %>%
+  group_by(GroundCover) %>%
+  ggplot(aes(x = Year, y = Percentage)) +
+  geom_point(aes(color = GroundCover)) +
+  facet_wrap(~GroundCover, ncol = 2) +
+  geom_line(aes(color = GroundCover), group = 1) +
+  labs(title = "Historical Ground Cover Frequency",
+       subtitle = "Location: Burnt Chopped Wood, CSU Mountain Campus, CO",
+       x = "Year",
+       y = "Percentage of Quadrats") +
+  dark_theme_gray() +
+  scale_color_viridis(discrete = TRUE) +
+  theme(legend.position = "none",
+        plot.title = element_text(face = "bold", size = "20"),
+        plot.title.position = "plot", 
+        axis.text.x = element_text(angle = 20),
+        axis.text.y = element_text(size = "7", angle = 0))
+```
+
+# Historical Relative Frequency
+
+Read in the data
+
+```{r}
+his_rel_freq <- read_excel("../data/clean/burnt_chopped_wood.xlsx", 
+    sheet = "Historical Rel Frequency", range = "A2:K10")
+
+View(his_rel_freq)
+```
+
+Tidy data:
+
+```{r}
+his_rel_freq_tidy <- his_rel_freq %>%
+  select(!"2000") %>%
+  pivot_longer(!GroundCover, 
+               names_to = "Year", 
+               values_to = "Percentage")
+
+view(his_rel_freq_tidy)
+```
+
+Graph:
+
+```{r}
+# generate graph similar to that in historical frequency section
+his_rel_freq_tidy %>%
+  ggplot(aes(x = Year, y = Percentage)) +
+  geom_col(aes(fill = GroundCover)) +
+  labs(title = "Historical Ground Cover Relative Frequency",
+       subtitle = "Location: Burnt Chopped Wood, CSU Mountain Campus, CO",
+       y = "Relative Frequency (%)") +
+  guides(fill = guide_legend(title = "Cover Type")) +
+  dark_theme_minimal() +
+  scale_fill_viridis(discrete = TRUE) +
+  theme(plot.title = element_text(face = "bold", size = "19"),
+        plot.title.position = "plot", 
+        axis.text.y = element_text(size = "7.5"))
+
+
+# make sure to mention that there was some unaccounted for data, and how that affected calculations (the missing transects)
+```
+
+# Historical Average Percent Cover
+
+Data:
+
+```{r}
+hist_avg_cover <- read_excel("../data/clean/burnt_chopped_wood.xlsx", 
+                             sheet = "Historical Avg % Cover", 
+                             range = "A2:K10")
+View(hist_avg_cover)
+```
+
+Tidy:
+
+```{r}
+hist_avg_cover_tidy <- hist_avg_cover %>%
+  select(!"2000") %>%
+  pivot_longer(!GroundCover, 
+               names_to = "Year",
+               values_to = "Percentage")
+
+view(hist_avg_cover_tidy)
+```
+
+Graph:
+
+```{r}
+# generate graph similar to all above
+hist_avg_cover_tidy %>%
+  ggplot(aes(x = Year, y = Percentage)) +
+  geom_col(aes(fill = GroundCover)) +
+  labs(title = "Historical Average Percent Ground Cover",
+       subtitle = "Location: Burnt Chopped Wood, CSU Mountain Campus, CO",
+       x = "Year",
+       y = "Average Ground Cover (%)") +
+  guides(fill = guide_legend(title = "Cover Type")) +
+  dark_theme_gray() +
+  scale_fill_viridis(discrete = TRUE) +
+  theme(legend.position = "right",
+        plot.title = element_text(face = "bold", size = "20"),
+        plot.title.position = "plot", 
+        axis.text.x = element_text(angle = 20),
+        axis.text.y = element_text(size = "7", angle = 0))
+```
+
+# Phase Plots
