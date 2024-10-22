@@ -54,9 +54,10 @@ burnt_cover_2024_tidy %>%
   scale_fill_viridis(discrete = TRUE) +
   scale_x_continuous(breaks = seq(1, 10, by = 1)) +
   theme(legend.position = "right",
-        plot.title = element_text(face = "bold", size = "20"),
+        plot.title = element_text(face = "bold", size = "18"),
         plot.title.position = "plot",
         axis.title.x = element_text(face = "bold", size = "10"),
+        axis.text.x = element_text(angle = "20"),
         axis.title.y = element_text(face = "bold", size = "10"))
 ```
 
@@ -96,13 +97,26 @@ burnt_hist_freq_tidy %>%
   labs(title = "Historical Ground Cover Frequency",
        subtitle = "Location: Burnt Chopped Wood, CSU Mountain Campus, CO",
        x = "Year",
-       y = "Percentage of Quadrats") +
+       y = "Percentage of Quadrats (%)") +
   guides(fill = guide_legend(title = "Cover Type")) +
   dark_theme_minimal() +
   scale_fill_viridis(discrete = TRUE) +
   theme(plot.title = element_text(face = "bold", size = "20"),
         plot.title.position = "plot", 
-        axis.text.y = element_text(size = "7.5"))
+        axis.title.x = element_text(face = "bold", size = "10"),
+        axis.text.x = element_text(angle = 20),
+        axis.title.y = element_text(face = "bold", size = "10")) +
+  annotate(geom = "text", x = 5.5, y = 150,         
+           label = "Overall low ground cover in \n 2002 and 2003",
+           size = 2.75) +
+  geom_curve(aes(x = 6.6, xend = 7.1, y = 135, yend = 50),
+             arrow = arrow(length = unit(0.2, "cm")),
+             size = 0.5,
+             curvature = -0.3) +
+  geom_curve(aes(x = 6, xend = 6, y = 115, yend = 50),
+             arrow = arrow(length = unit(0.2, "cm")),
+             size = 0.5,
+             curvature = 0)
 
 # annotate, it seems there might have been an error in calculations for 2002 and 2003
 ```
@@ -117,14 +131,14 @@ burnt_hist_freq_tidy %>%
   labs(title = "Historical Ground Cover Frequency",
        subtitle = "Location: Burnt Chopped Wood, CSU Mountain Campus, CO",
        x = "Year",
-       y = "Percentage of Quadrats") +
+       y = "Percentage of Quadrats (%)") +
   dark_theme_gray() +
   scale_color_viridis(discrete = TRUE) +
   theme(legend.position = "none",
         plot.title = element_text(face = "bold", size = "20"),
         plot.title.position = "plot", 
         axis.text.x = element_text(angle = 20),
-        axis.text.y = element_text(size = "7", angle = 0))
+        axis.text.y = element_text(size = "6", angle = 0))
 ```
 
 # Historical Relative Frequency
@@ -159,16 +173,14 @@ burnt_his_rel_freq_tidy %>%
   geom_col(aes(fill = GroundCover)) +
   labs(title = "Historical Ground Cover Relative Frequency",
        subtitle = "Location: Burnt Chopped Wood, CSU Mountain Campus, CO",
+       caption = "Discrepancies in total percentage is due to rounding",
        y = "Relative Frequency (%)") +
   guides(fill = guide_legend(title = "Cover Type")) +
   dark_theme_minimal() +
   scale_fill_viridis(discrete = TRUE) +
-  theme(plot.title = element_text(face = "bold", size = "19"),
-        plot.title.position = "plot", 
-        axis.text.y = element_text(size = "7.5"))
-
-
-# make sure to mention that there was some unaccounted for data, and how that affected calculations (the missing transects)
+  theme(plot.title = element_text(face = "bold", size = "17"),
+        plot.title.position = "plot",
+        axis.text.x = element_text(angle = 20))
 ```
 
 # Historical Average Percent Cover
@@ -179,7 +191,7 @@ Data:
 burnt_hist_avg_cover <- read_excel("../data/clean/burnt_chopped_wood.xlsx", 
                              sheet = "Historical Avg % Cover", 
                              range = "A2:K10")
-View(burnt_hist_avg_cover)
+#View(burnt_hist_avg_cover)
 ```
 
 Tidy:
@@ -191,7 +203,7 @@ burnt_hist_avg_cover_tidy <- burnt_hist_avg_cover %>%
                names_to = "Year",
                values_to = "Percentage")
 
-view(burnt_hist_avg_cover_tidy)
+#view(burnt_hist_avg_cover_tidy)
 ```
 
 Graph:
@@ -209,10 +221,9 @@ burnt_hist_avg_cover_tidy %>%
   dark_theme_gray() +
   scale_fill_viridis(discrete = TRUE) +
   theme(legend.position = "right",
-        plot.title = element_text(face = "bold", size = "20"),
+        plot.title = element_text(face = "bold", size = "18"),
         plot.title.position = "plot", 
-        axis.text.x = element_text(angle = 20),
-        axis.text.y = element_text(size = "7", angle = 0))
+        axis.text.x = element_text(angle = 20))
 ```
 
 # Phase Plots
